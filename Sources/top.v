@@ -53,13 +53,13 @@ module top(input clk, input reset);
 
     //Prediction
     wire prediction;
-    Predictor predictor_inst(clk, pc_out, pc_ex_mem, branch_taken, prediction);
+    Predictor predictor_inst(clk, pc_out, pc_mem, branch_taken, prediction);
 
     //IF
     wire [31:0] pc_temp;
     wire pc_mux_sel = Branch && prediction;
     mux_2x1 mux2_pcsel(pc_next,pc_branch_add, pc_mux_sel, pc_temp);
-    mux_2x1 mux2_pc_NT(pc_temp,pc_next_ex_mem, flush_on_not_taken , pc_in);
+    mux_2x1 mux2_pc_NT(pc_temp,correct_next_address, flush_on_not_taken , pc_in);
 
     pc pc_inst(pc_in, clk, reset, PcWrite, pc_out);
     inst_mem imem_inst(pc_out, Instruction);
@@ -96,13 +96,13 @@ module top(input clk, input reset);
     //ID_EX
     wire id_ex_reset = reset||flush_on_not_taken;
     ID_EX id_ex(clk, id_ex_reset,
-        pc_if_id, pc_next_if_id, Instruction_if_id,
+        pc_if_id, pc_next_if_id ,Instruction_if_id, pc_branch_add
         ReadData1,ReadData2,Imm_Gen_Out,
         AluOP_gated, AluSrcA_gated,AluSrcB_gated,
         Branch_gated,MemRead_gated,MemWrite_gated,
         RegWrite_gated,MemtoReg_gated,
 
-        pc_id_ex, pc_next_id_ex, Instruction_id_ex,
+        pc_id_ex, pc_next_id_ex, Instruction_id_ex, pc_branch_add_id_ex,
         ReadData1_id_ex, ReadData2_id_ex, Imm_Gen_Out_id_ex,
         AluOP_id_ex, AluSrcA_id_ex, AluSrcB_id_ex,
         Branch_id_ex, MemRead_id_ex,MemWrite_id_ex,
@@ -123,13 +123,13 @@ module top(input clk, input reset);
 
     //EX_MEM
     EX_MEM ex_mem(clk, reset,
-        pc_id_ex, pc_next_id_ex, Instruction_id_ex,
+        pc_id_ex, pc_next_id_ex, Instruction_id_ex, pc_branch_add_id_ex,
         ReadData2_fwd_b, //Later the name is changed to ReadData2_ex_mem but content is same.
         Branch_id_ex, MemRead_id_ex,MemWrite_id_ex,
         RegWrite_id_ex, MemtoReg_id_ex,
         AluOut,zero,lt,ltu,
 
-        pc_ex_mem, pc_next_ex_mem, Instruction_ex_mem,
+        pc_ex_mem, pc_next_ex_mem, Instruction_ex_mem, pc_branch_add_ex_mem,
         ReadData2_ex_mem,
         Branch_ex_mem, MemRead_ex_mem, MemWrite_ex_mem,
         RegWrite_ex_mem, MemtoReg_ex_mem,
@@ -142,7 +142,10 @@ module top(input clk, input reset);
     assign branch_and = branch_taken & Branch_ex_mem;
     // ctrl_NT(branch_and,flush_on_taken);
     ctrl_T ctrl_t_inst(branch_and,Branch_ex_mem,flush_on_not_taken);
-    
+
+    wire [31:0] correct_next_address;
+    assign correct_next_address = branch_and ? pc_branch_add_ex_mem : pc_next_ex_mem;
+
     data_mem dmem_inst(AluOut_ex_mem,clk,ReadData2_ex_mem,DataMemoryOut,MemRead_ex_mem,MemWrite_ex_mem);
 
     //MEM_WB
