@@ -20,6 +20,7 @@ module ID_EX(input clk, input reset ,input [31:0] pc_id, input [31:0] pc_4_id, i
                     pc_ex<=32'b0;
                     pc_4_ex<=32'b0;
                     instruction_ex <=32'b0;
+                    pc_branch_ex   <= 32'b0;
                     ReadData1_ex <=32'b0;
                     ReadData2_ex <=32'b0;
                     ImmGenOut_ex <=32'b0;
@@ -36,7 +37,7 @@ module ID_EX(input clk, input reset ,input [31:0] pc_id, input [31:0] pc_4_id, i
                     pc_ex<=pc_id;
                     pc_4_ex<=pc_4_id;
                     instruction_ex <= instruction_id;
-                    pc_branch_ex   <= pc_branch     
+                    pc_branch_ex   <= pc_branch;     
                     ReadData1_ex   <= ReadData1_id;
                     ReadData2_ex   <= ReadData2_id;
                     ImmGenOut_ex   <= ImmGenOut_id;
