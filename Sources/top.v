@@ -53,7 +53,7 @@ module top(input clk, input reset);
 
     //Prediction
     wire prediction;
-    Predictor predictor_inst(clk, pc_out, pc_mem, branch_taken, prediction);
+    Predictor predictor_inst(clk, pc_out, pc_ex_mem, branch_taken, prediction);
 
     //IF
     wire [31:0] pc_temp;
