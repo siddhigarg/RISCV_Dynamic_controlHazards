@@ -1,4 +1,4 @@
-module EX_MEM(input clk, input reset ,input [31:0] pc_ex, input [31:0] pc_4_ex, input [31:0] instruction_ex,
+module EX_MEM(input clk, input reset ,input [31:0] pc_ex, input [31:0] pc_4_ex, input [31:0] instruction_ex, input pc_branch,
 
             // 
             input [31:0] ReadData2_ex,
@@ -10,7 +10,7 @@ module EX_MEM(input clk, input reset ,input [31:0] pc_ex, input [31:0] pc_4_ex, 
             input [31:0] ALUOut_ex, input zero_ex,input lt_ex, input ltu_ex,
 
 
-            output reg [31:0] pc_mem, output reg [31:0] pc_4_mem, output reg [31:0] instruction_mem,
+              output reg [31:0] pc_mem, output reg [31:0] pc_4_mem, output reg [31:0] instruction_mem, output reg [31:0] pc_branch_mem,
             // 
             output reg [31:0] ReadData2_mem,
 
@@ -28,6 +28,7 @@ module EX_MEM(input clk, input reset ,input [31:0] pc_ex, input [31:0] pc_4_ex, 
                     pc_mem         <= 32'b0;
                     pc_4_mem       <= 32'b0;
                     instruction_mem<= 32'b0;
+                    pc_branch_mem  <= 32'b0;  
 
                     ReadData2_mem  <= 32'b0;
 
@@ -47,6 +48,7 @@ module EX_MEM(input clk, input reset ,input [31:0] pc_ex, input [31:0] pc_4_ex, 
                     pc_mem         <= pc_ex;
                     pc_4_mem       <= pc_4_ex;
                     instruction_mem<= instruction_ex;
+                    pc_branch_mem  <= pc_branch;       
 
                     ReadData2_mem  <= ReadData2_ex;
 
