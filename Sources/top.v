@@ -51,9 +51,14 @@ module top(input clk, input reset);
 
     wire [31:0] WriteData;
 
+    //Prediction
+    wire prediction;
+    Predictor predictor_inst(clk, pc_out, pc_mem, branch_taken, prediction);
+
     //IF
     wire [31:0] pc_temp;
-    mux_2x1 mux2_pcsel(pc_next,pc_branch_add, Branch, pc_temp);
+    wire pc_mux_sel = Branch && prediction;
+    mux_2x1 mux2_pcsel(pc_next,pc_branch_add, pc_mux_sel, pc_temp);
     mux_2x1 mux2_pc_NT(pc_temp,pc_next_ex_mem, flush_on_not_taken , pc_in);
 
     pc pc_inst(pc_in, clk, reset, PcWrite, pc_out);
