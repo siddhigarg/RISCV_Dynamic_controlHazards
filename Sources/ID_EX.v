@@ -1,4 +1,4 @@
-module ID_EX(input clk, input reset ,input [31:0] pc_id, input [31:0] pc_4_id, input [31:0] instruction_id,
+module ID_EX(input clk, input reset ,input [31:0] pc_id, input [31:0] pc_4_id, input [31:0] instruction_id,input pc_branch,
             input [31:0] ReadData1_id,input [31:0] ReadData2_id,input [31:0] ImmGenOut_id,
 
             //control lines
@@ -6,7 +6,7 @@ module ID_EX(input clk, input reset ,input [31:0] pc_id, input [31:0] pc_4_id, i
             input Branch_id, input MemRead_id, input MemWrite_id, //MEM
             input RegWrite_id, input MemtoReg_id, //WB
 
-            output reg [31:0] pc_ex, output reg [31:0] pc_4_ex, output reg [31:0] instruction_ex,
+             output reg [31:0] pc_ex, output reg [31:0] pc_4_ex, output reg [31:0] instruction_ex,output reg [31:0] pc_branch_ex,
             output reg [31:0] ReadData1_ex,output reg [31:0] ReadData2_ex,output reg [31:0] ImmGenOut_ex,
 
             //control lines
@@ -36,6 +36,7 @@ module ID_EX(input clk, input reset ,input [31:0] pc_id, input [31:0] pc_4_id, i
                     pc_ex<=pc_id;
                     pc_4_ex<=pc_4_id;
                     instruction_ex <= instruction_id;
+                    pc_branch_ex   <= pc_branch     
                     ReadData1_ex   <= ReadData1_id;
                     ReadData2_ex   <= ReadData2_id;
                     ImmGenOut_ex   <= ImmGenOut_id;
